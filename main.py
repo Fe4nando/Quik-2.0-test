@@ -78,7 +78,22 @@ async def help(ctx):
 
 import datetime 
 from datetime import datetime
-
+@client.command()
+async def downloadlogs(ctx,*,reason=None):
+    if reason==None:
+        reason='Not provided'
+    timestamp=datetime.now()
+    try:
+     ent=open(r'C:\Users\LENOVO\OneDrive\Documents\Desktop\Python Bot\PIE\Quik-2.0-test\logs\messagelogs.txt','a', encoding='utf-8')
+    except:
+     ent=open(r'/workspace/logs/messagelogs.txt','a', encoding='utf-8')
+    ent.write(f"\n Data was Downloaded on {timestamp} by:{ctx.author.display_name},with the reason of:{reason}\n")
+    ent.close()
+    try:
+     await ctx.send(file=discord.File(r'C:\Users\LENOVO\OneDrive\Documents\Desktop\Python Bot\PIE\Quik-2.0-test\logs\messagelogs.txt'))
+    except:
+     await ctx.send(file=discord.File(r'/workspace/logs/messagelogs.txt'))
+     
 @client.event
 async def on_message_delete(message):
     timestamp=datetime.now()
