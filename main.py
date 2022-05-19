@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+from config import *
 from discord.ui import Button,View
 
 intents = discord.Intents.all()
@@ -172,4 +173,4 @@ async def ban(ctx,user:discord.Member,reason="No Reason Provided"):
             await user.ban(reason=reason)
 
     
-client.run(DBST)
+client.run(token)
