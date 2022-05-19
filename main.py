@@ -1,4 +1,5 @@
 import discord
+import os
 from discord.ext import commands
 from config import *
 from discord.ui import Button,View
@@ -12,6 +13,9 @@ client.remove_command('help')
 async def on_ready():
     await client.change_presence(status=discord.Status.idle,activity=discord.Game('!help'))
     print('Quirk Is Online')
+    absolute_path = os.path.abspath(__file__)
+    print("Full path: " + absolute_path)
+    print("Directory Path: " + os.path.dirname(absolute_path))
 @client.event
 async def on_command_error(ctx,error):
     if isinstance(error,commands.CommandNotFound):
