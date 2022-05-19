@@ -76,11 +76,19 @@ async def help(ctx):
     embed.add_field(name="Features",value="Logging,Anit-Swear,Warnings,Security System")
     await ctx.send(embed=embed)
 
+import datetime 
+from datetime import datetime
+
 @client.event
 async def on_message_delete(message):
-    channel=client.get_channel(966186616232243210)
-    embed=discord.Embed(title="Message Deleted",description=f"User:{message.author}\nContent:{message.content}\nChannel:{message.channel.mention}")
-    await channel.send(embed=embed)
+    timestamp=datetime.now()
+    try:
+     ent=open(r'C:\Users\LENOVO\OneDrive\Documents\Desktop\Python Bot\PIE\Quik-2.0-test\logs\messagelogs.txt','a', encoding='utf-8')
+    except:
+     ent=open(r'/workspace/logs/messagelogs.txt','a', encoding='utf-8')
+    ent.write(f"Time:{timestamp} Message:{message.content} Location:{message.channel.mention} Author:{message.author.display_name} ID:{message.author.id} \n")
+    ent.close()
+    
 @client.event
 async def on_message_edit(before,after):
     channel=client.get_channel(966186616232243210)
@@ -176,5 +184,8 @@ async def ban(ctx,user:discord.Member,reason="No Reason Provided"):
             await ctx.send("Cannot Message User! They cant request for a ban appeal")
             await user.ban(reason=reason)
 
+      
+      
+      
     
 client.run(token)
