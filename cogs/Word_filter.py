@@ -12,8 +12,10 @@ class filter(commands.Cog):
     
     @commands.Cog.listener()
     async def on_message(self,ctx):
+     content=ctx.content
+     concontent=content.lower()
      for word in filtered_word:
-        if word in ctx.content:
+        if word in concontent:
             await ctx.delete()
             timestamp=datetime.now()
             try:

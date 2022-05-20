@@ -8,11 +8,11 @@ from discord.ui import Button,View
 intents = discord.Intents.all()
 discord.member = True
 client=commands.Bot (command_prefix=commands.when_mentioned_or('!'),intents = intents)
-client.remove_command('help')
+
 
 @client.event
 async def on_ready():
-    await client.change_presence(status=discord.Status.idle,activity=discord.Game('!help'))
+    await client.change_presence(status=discord.Status.idle,activity=discord.Game('!report '))
     print('Quirk Is Online')
     absolute_path = os.path.abspath(__file__)
     print("Full path: " + absolute_path)
@@ -69,95 +69,12 @@ async def report(ctx):
             await ctx.send("You have Disabled allow user dm in privacy settings",embed=embed)
             await ctx.message.add_reaction("❌")
             await ctx.message.remove_reaction("✅")
-            
-@client.command()
-async def help(ctx):
-    embed=discord.Embed(title="Help Commands of Python Quirk")
-    embed.add_field(name="Member Count",value="Gives the Server member count")
-    embed.add_field(name="`!report`",value="You can report users and bugs over here")
-    embed.add_field(name="Features",value="Logging,Anit-Swear,Warnings,Security System")
-    await ctx.send(embed=embed)
-
 
 @commands.has_permissions(manage_messages=True)
 @client.command(aliases=["purge"])
 async def clear(ctx,amount:int):
     await ctx.channel.purge(limit=amount)
 
-@commands.has_permissions(ban_members=True)
-@client.command(pass_context=True)
-async def mute(ctx,user:discord.Member=None,*,reason="No reason provided"):
-    if user==None:
-        await ctx.send("You need to specify the user!")
-    elif user==ctx.message.author:
-        await ctx.send("You cant mute yourself")
-    elif user.guild_permissions.administrator:
-        await ctx.send("You cant mute a administrator")
-    else:
-        mute=ctx.guild.get_role(852770025521807400)
-        await ctx.send(f"{user} has been muted!\nReason:{reason}")
-        await user.add_roles(mute)
-        
-@commands.has_permissions(ban_members=True)
-@client.command(pass_context=True)
-async def unmute(ctx,user:discord.Member=None):
-    mute=ctx.guild.get_role(852770025521807400)
-    if user==None:
-        await ctx.send("You need to specify the user!")
-    elif user==ctx.message.author:
-        await ctx.send("You cant unmute yourself!")
-    elif user.guild_permissions.administrator:
-        await ctx.send("You cant unmute a administrator!")
-    elif mute not in user.roles:
-        await ctx.send("The user isnt even muted at first!")
-    else:
-        await ctx.send(f"{user} has been unmuted")
-        await user.remove_roles(mute)
-        
-@commands.has_permissions(ban_members=True)
-@client.command(pass_context=True)
-async def warn(ctx,user:discord.Member=None,*,reason="No reason provided"):
-    channel=client.get_channel(966186616232243210)
-    if user==None:
-        await ctx.send("You need to specify the user!")
-    elif user==ctx.message.author:
-        await ctx.send("You cant warn yourself")
-    elif user.guild_permissions.administrator:
-        await ctx.send("You cant warn administrator")
-    else:
-        embed=discord.Embed(title="Warning!",description=f"{user.mention} has been warning.Reason:{reason}")
-        await ctx.send(embed=embed)
-        await channel.send(embed=embed)
-        try: 
-          await user.send(f"You have been warned by the adminstrator of the Grade 9 IGCSE Server.Reason:{reason}")
-        except:
-          await channel.send("Unable to dm the user,has dms permissions off,cant message user about warn")
-
-@commands.has_permissions(ban_members=True)
-@client.command(pass_context=True)
-async def ban(ctx,user:discord.Member,reason="No Reason Provided"):
-    if user==None:
-        await ctx.send("Invailded Information Provided")
-    elif user.guild_permissions.administrator:
-        await ctx.send("Unable to Ban Error Code:Admin=True")
-    else:
-        try:
-         log=open(r'C:\Users\LENOVO\OneDrive\Documents\Desktop\Python Bot\PIE\Quik-2.0-test\logs\userologs.txt')
-        except:
-         log=open(r'/workspace/logs/userlogs.txt')
-        try:
-            embed=discord.Embed(title="Ban",
-                                description="It looks like you have been banned from the server!\n You can request for a unban appeal by click the button below.")
-            button=Button(label="Request Appeal",url="https://docs.google.com/forms/d/e/1FAIpQLSdvYvZGKhi4VDoiKs6lleraftf-ke4Yxh_SGe5vBRsdGUIEbg/viewform?usp=sf_link")
-            view=View()
-            view.add_item(button)
-            await user.send(embed=embed,view=view)
-            await ctx.send(f"{user.display_name} has been banned from the server")
-            await user.ban(reason=reason)
-        except:
-            await ctx.send("Cannot Message User! They cant request for a ban appeal")
-            await user.ban(reason=reason)
-        
 @client.command()
 async def load_extensions(ctx,extension):
     client.load_extension(f"cogs.{extension}")
