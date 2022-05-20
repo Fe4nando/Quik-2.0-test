@@ -1,7 +1,8 @@
 import discord
+import asyncio
 import os
 from discord.ext import commands
-from config import *
+from assests.config import *
 from discord.ui import Button,View
 
 intents = discord.Intents.all()
@@ -16,6 +17,7 @@ async def on_ready():
     absolute_path = os.path.abspath(__file__)
     print("Full path: " + absolute_path)
     print("Directory Path: " + os.path.dirname(absolute_path))
+    
 @client.event
 async def on_command_error(ctx,error):
     if isinstance(error,commands.CommandNotFound):
@@ -76,54 +78,7 @@ async def help(ctx):
     embed.add_field(name="Features",value="Logging,Anit-Swear,Warnings,Security System")
     await ctx.send(embed=embed)
 
-import datetime 
-from datetime import datetime
-@client.command()
-async def downloadlogs(ctx,*,reason=None):
-    if reason==None:
-        reason='Not provided'
-    timestamp=datetime.now()
-    try:
-     ent=open(r'C:\Users\LENOVO\OneDrive\Documents\Desktop\Python Bot\PIE\Quik-2.0-test\logs\messagelogs.txt','a', encoding='utf-8')
-    except:
-     ent=open(r'/workspace/logs/messagelogs.txt','a', encoding='utf-8')
-    ent.write(f"\n Data was Downloaded on {timestamp} by:{ctx.author.display_name},with the reason of:{reason}\n")
-    ent.close()
-    try:
-     await ctx.send(file=discord.File(r'C:\Users\LENOVO\OneDrive\Documents\Desktop\Python Bot\PIE\Quik-2.0-test\logs\messagelogs.txt'))
-    except:
-     await ctx.send(file=discord.File(r'/workspace/logs/messagelogs.txt'))
-     
-@client.event
-async def on_message_delete(message):
-    timestamp=datetime.now()
-    try:
-     ent=open(r'C:\Users\LENOVO\OneDrive\Documents\Desktop\Python Bot\PIE\Quik-2.0-test\logs\messagelogs.txt','a', encoding='utf-8')
-    except:
-     ent=open(r'/workspace/logs/messagelogs.txt','a', encoding='utf-8')
-    ent.write(f"Time:{timestamp} Message:{message.content} Location:{message.channel.mention} Author:{message.author.display_name} ID:{message.author.id} \n")
-    ent.close()
-    
-@client.event
-async def on_message_edit(before,after):
-    channel=client.get_channel(966186616232243210)
-    embed=discord.Embed(title="Message Edited",description=f"User:{before.author}\nPrevious:{before.content}\nAfter:{after.content}\nChannel:{before.channel.mention}")
-    await channel.send(embed=embed)
-  
-    
-import Word_filter
-from Word_filter import word
-filtred_words=word
-@client.event
-async def on_message(ctx):
-    channel=client.get_channel(966186616232243210)
-    for word in filtred_words:
-        if word in ctx.content:
-            await ctx.delete()
-            embed=discord.Embed(title="Swear Word Used",description=f"{ctx.author.name} used a swear word.\nWord:||{ctx.content}||")
-            await channel.send(embed=embed)
-    await client.process_commands(ctx)
-    
+
 @commands.has_permissions(manage_messages=True)
 @client.command(aliases=["purge"])
 async def clear(ctx,amount:int):
@@ -187,6 +142,10 @@ async def ban(ctx,user:discord.Member,reason="No Reason Provided"):
         await ctx.send("Unable to Ban Error Code:Admin=True")
     else:
         try:
+         log=open(r'C:\Users\LENOVO\OneDrive\Documents\Desktop\Python Bot\PIE\Quik-2.0-test\logs\userologs.txt')
+        except:
+         log=open(r'/workspace/logs/userlogs.txt')
+        try:
             embed=discord.Embed(title="Ban",
                                 description="It looks like you have been banned from the server!\n You can request for a unban appeal by click the button below.")
             button=Button(label="Request Appeal",url="https://docs.google.com/forms/d/e/1FAIpQLSdvYvZGKhi4VDoiKs6lleraftf-ke4Yxh_SGe5vBRsdGUIEbg/viewform?usp=sf_link")
@@ -198,9 +157,24 @@ async def ban(ctx,user:discord.Member,reason="No Reason Provided"):
         except:
             await ctx.send("Cannot Message User! They cant request for a ban appeal")
             await user.ban(reason=reason)
+        
+@client.command()
+async def load_extensions(ctx,extension):
+    client.load_extension(f"cogs.{extension}")
 
-      
-      
-      
+@client.command()
+async def unload_extensions(ctx,extension):
+    client.unload_extension(f"cogs.{extension}")
     
-client.run(token)
+async def load_extensions():
+ for filename in os.listdir('./cogs'):
+    if filename.endswith('.py'):
+        await client.load_extension(f'cogs.{filename[:-3]}')
+    
+async def main():
+    async with client:
+        await load_extensions()
+        await client.start(token)
+
+asyncio.run(main())
+        
