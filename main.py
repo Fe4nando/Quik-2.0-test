@@ -10,6 +10,8 @@ discord.member = True
 client=commands.Bot (command_prefix=commands.when_mentioned_or('!'),intents = intents)
 
 
+
+
 @client.event
 async def on_ready():
     await client.change_presence(status=discord.Status.idle,activity=discord.Game('!report '))
@@ -84,9 +86,9 @@ async def unload_extensions(ctx,extension):
     client.unload_extension(f"cogs.{extension}")
     
 async def load_extensions():
- for filename in os.listdir('./cogs'):
+ for filename in os.listdir('./commands'):
     if filename.endswith('.py'):
-        await client.load_extension(f'cogs.{filename[:-3]}')
+        await client.load_extension(f'commands.{filename[:-3]}')
     
 async def main():
     async with client:

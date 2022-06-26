@@ -37,6 +37,7 @@ class Logs(commands.Cog):
        await ctx.send(file=discord.File(r'/workspace/logs/messagelogs.txt'))
        await ctx.send(file=discord.File(r'/workspace/logs/userologs.txt'))
       
+    
       
     @commands.Cog.listener()
     async def on_member_join(self,member):
@@ -57,6 +58,9 @@ class Logs(commands.Cog):
        ent=open(r'/workspace/logs/userologs.txt','a', encoding='utf-8')
       ent.write(f"On:{timestamp} {member.display_name} left the Server. User Id:{member.id} \n")
       ent.close
+      
+    
+    
       
       
     
