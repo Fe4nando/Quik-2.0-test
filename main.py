@@ -14,7 +14,7 @@ client=commands.Bot (command_prefix=commands.when_mentioned_or('!'),intents = in
 
 @client.event
 async def on_ready():
-    await client.change_presence(status=discord.Status.idle,activity=discord.Game('!report '))
+    await client.change_presence(status=discord.Status.online,activity=discord.Game('!report '))
     print('Quirk Is Online')
     absolute_path = os.path.abspath(__file__)
     print("Full path: " + absolute_path)
